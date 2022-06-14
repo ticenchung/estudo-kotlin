@@ -2,10 +2,10 @@ package br.com.luiz.user.dto
 
 import br.com.luiz.user.model.Address
 import javax.persistence.Embedded
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
-import kotlin.math.min
 
 data class NewClientForm(
     @field:NotEmpty(message = "Message cannot be empty.")
@@ -13,6 +13,7 @@ data class NewClientForm(
     val name: String,
 
     @field:NotNull
+    @field:Min(value = 18, message = "Sorry. Only above age of 18 can register.")
     val age: Int,
 
     @Embedded
