@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/clients")
@@ -18,7 +19,7 @@ class ClientController(
 
     @PostMapping
     fun register(
-        @RequestBody form: NewClientForm,
+        @RequestBody @Valid form: NewClientForm,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<ClientView> {
         val clientView = service.register(form)
