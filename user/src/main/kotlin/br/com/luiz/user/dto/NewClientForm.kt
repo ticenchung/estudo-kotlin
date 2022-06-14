@@ -2,6 +2,7 @@ package br.com.luiz.user.dto
 
 import br.com.luiz.user.model.Address
 import javax.persistence.Embedded
+import javax.validation.constraints.Email
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -23,6 +24,7 @@ data class NewClientForm(
     val telephone: String,
 
     @field:NotEmpty(message = "E-mail cannot be empty.")
+    @field:Email(regexp = ".+[@].+[\\.].+", message = "Please enter a valid e-mail.")
     val email: String,
 
     @field:NotEmpty(message = "Password cannot be empty.")
