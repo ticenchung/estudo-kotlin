@@ -26,5 +26,6 @@ data class NewClientForm(
     val email: String,
 
     @field:NotEmpty(message = "Password cannot be empty.")
+    @field:Size(min = 8, max = 100, message = "Password must be at least 8 characters.")
     val password: String
 )

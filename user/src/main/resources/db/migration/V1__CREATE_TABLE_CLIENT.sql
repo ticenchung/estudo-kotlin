@@ -8,7 +8,7 @@ CREATE TABLE client(
     state VARCHAR(2),
     telephone VARCHAR(15) NOT NULL,
     email VARCHAR(40) NOT NULL UNIQUE,
-    password VARCHAR(20) NOT NULL,
+    password VARCHAR(100) NOT NULL,
     is_active BOOLEAN NOT NULL,
     PRIMARY KEY(id)
 );
