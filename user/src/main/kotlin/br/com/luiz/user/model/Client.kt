@@ -18,5 +18,5 @@ data class Client(
     val telephone: String,
     val email: String,
     val password: String,
-    val isActive: Boolean = true
+    var isActive: Boolean = true
 )
