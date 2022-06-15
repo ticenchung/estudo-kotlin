@@ -22,8 +22,8 @@ class SwaggerConfig {
 
         .apiInfo(
             ApiInfoBuilder()
-                .title("Livro")
-                .description("API Livro")
+                .title("User")
+                .description("API User")
                 .build())
 
 }
