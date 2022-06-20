@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -48,6 +49,7 @@ class ProductController(
 
     @PostMapping
     @CacheEvict(value = ["products"], allEntries = true)
+    @Transactional
     fun save(
         @RequestBody @Valid form: NewProductForm,
         uriBuilder: UriComponentsBuilder
@@ -59,6 +61,7 @@ class ProductController(
 
     @PutMapping("/{id}")
     @CacheEvict(value = ["products"], allEntries = true)
+    @Transactional
     fun update(@PathVariable id: Long,
                @RequestBody @Valid form: UpdateProductForm
     ): ResponseEntity<ProductUpdateView> {
@@ -81,6 +84,7 @@ class ProductController(
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = ["products"], allEntries = true)
+    @Transactional
     fun delete(@PathVariable id: Long) = service.deleteById(id)
 
 }
