@@ -7,6 +7,8 @@ import br.com.luiz.product.mapper.ProductUpdateViewMapper
 import br.com.luiz.product.mapper.ProductViewMapper
 import br.com.luiz.product.model.Product
 import br.com.luiz.product.repository.ProductRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,11 +20,18 @@ class ProductService(
     private val notFoundMessage: String = "Product not found."
 ) {
 
-    fun findAll(): List<ProductView> {
-        return productRepository.findAll()
-            .map { p ->
-                productViewMapper.map(p)
-            }
+    fun findAll(
+        productName: String?,
+        pagination: Pageable
+    ): Page<ProductView> {
+        val products = if (productName == null) {
+            productRepository.findAll(pagination)
+        } else {
+            productRepository.findByName(productName, pagination)
+        }
+        return products.map { p ->
+            productViewMapper.map(p)
+        }
     }
 
     fun save(form: NewProductForm): ProductView {
@@ -64,8 +73,6 @@ class ProductService(
         return productViewMapper.map(saveProduct)
     }
 
-    fun deleteById(id: Long) {
-        productRepository.deleteById(id)
-    }
+    fun deleteById(id: Long) = productRepository.deleteById(id)
 
 }

@@ -5,6 +5,10 @@ import br.com.luiz.product.dto.ProductUpdateView
 import br.com.luiz.product.dto.ProductView
 import br.com.luiz.product.dto.UpdateProductForm
 import br.com.luiz.product.service.ProductService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
@@ -27,7 +32,10 @@ class ProductController(
 ) {
 
     @GetMapping
-    fun list(): List<ProductView> = service.findAll()
+    fun list(
+        @RequestParam(required = false) productName: String?,
+        @PageableDefault(size = 5, direction = Sort.Direction.ASC) pagination: Pageable
+    ): Page<ProductView> = service.findAll(productName, pagination)
 
     @GetMapping("/{id}")
     fun findProductById(@PathVariable id: Long): ResponseEntity<ProductView> {
@@ -67,8 +75,6 @@ class ProductController(
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable id: Long) {
-        service.deleteById(id)
-    }
+    fun delete(@PathVariable id: Long) = service.deleteById(id)
 
 }
