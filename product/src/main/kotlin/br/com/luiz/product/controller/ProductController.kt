@@ -5,6 +5,8 @@ import br.com.luiz.product.dto.ProductUpdateView
 import br.com.luiz.product.dto.ProductView
 import br.com.luiz.product.dto.UpdateProductForm
 import br.com.luiz.product.service.ProductService
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -32,6 +34,7 @@ class ProductController(
 ) {
 
     @GetMapping
+    @Cacheable("products")
     fun list(
         @RequestParam(required = false) productName: String?,
         @PageableDefault(size = 5, direction = Sort.Direction.ASC) pagination: Pageable
@@ -44,6 +47,7 @@ class ProductController(
     }
 
     @PostMapping
+    @CacheEvict(value = ["products"], allEntries = true)
     fun save(
         @RequestBody @Valid form: NewProductForm,
         uriBuilder: UriComponentsBuilder
@@ -54,6 +58,7 @@ class ProductController(
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = ["products"], allEntries = true)
     fun update(@PathVariable id: Long,
                @RequestBody @Valid form: UpdateProductForm
     ): ResponseEntity<ProductUpdateView> {
@@ -75,6 +80,7 @@ class ProductController(
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = ["products"], allEntries = true)
     fun delete(@PathVariable id: Long) = service.deleteById(id)
 
 }
