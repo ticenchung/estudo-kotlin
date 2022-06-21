@@ -41,8 +41,7 @@ class ProductService(
     }
 
     fun update(id: Long, form: UpdateProductForm): ProductUpdateView {
-        val product = productRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
+        val product = findProduct(id)
         product.name = form.name
         product.quantity = form.quantity
         product.description = form.description
@@ -51,28 +50,21 @@ class ProductService(
         return productUpdateViewMapper.map(saveProduct)
     }
 
-    fun findById(id: Long): ProductView {
-        val product = productRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
-        return productViewMapper.map(product)
-    }
+    fun findById(id: Long): ProductView = productViewMapper.map(findProduct(id))
 
-    fun deactivate(id: Long): ProductView {
-        val product: Product = productRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
-        product.isActive = false
-        val saveProduct = productRepository.save(product)
-        return productViewMapper.map(saveProduct)
-    }
+    fun deactivate(id: Long): ProductView = productViewMapper.map(switchActive(id, false))
 
-    fun activate(id: Long): ProductView {
-        val product: Product = productRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
-        product.isActive = true
-        val saveProduct = productRepository.save(product)
-        return productViewMapper.map(saveProduct)
-    }
+    fun activate(id: Long): ProductView = productViewMapper.map(switchActive(id, true))
 
     fun deleteById(id: Long) = productRepository.deleteById(id)
+
+    fun findProduct(id: Long): Product = productRepository.findById(id)
+        .orElseThrow { NotFoundException(notFoundMessage) }
+
+    fun switchActive(id: Long, active: Boolean): Product {
+        val product = findProduct(id)
+        product.isActive = active
+        return productRepository.save(product)
+    }
 
 }
