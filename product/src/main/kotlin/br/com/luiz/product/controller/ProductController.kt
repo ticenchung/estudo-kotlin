@@ -70,12 +70,14 @@ class ProductController(
     }
 
     @PatchMapping("/{id}/deactivate")
+    @CacheEvict(value = ["products"], allEntries = true)
     fun deactivate(@PathVariable id: Long): ResponseEntity<ProductView> {
         val productView = service.deactivate(id)
         return ResponseEntity.ok().body(productView)
     }
 
     @PatchMapping("/{id}/activate")
+    @CacheEvict(value = ["products"], allEntries = true)
     fun activate(@PathVariable id: Long): ResponseEntity<ProductView> {
         val productView = service.activate(id)
         return ResponseEntity.ok().body(productView)
