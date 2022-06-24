@@ -14,5 +14,10 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-  mvc.pathmatch:
-    matching-strategy: ant-path-matcher
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+
+jwt:
+  secret: f2982a72-e22d-4ae3-b091-2e7135b5d55a
+  expiration : 900000
