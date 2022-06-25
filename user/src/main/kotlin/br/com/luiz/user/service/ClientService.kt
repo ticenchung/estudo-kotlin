@@ -33,32 +33,25 @@ class ClientService(
         }
     }
 
-    fun findById(id: Long): ClientView {
-        val client: Client = clientRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
-        return clientViewMapper.map(client)
-    }
-
     fun register(form: NewClientForm): ClientView {
         val client = clientFormMapper.map(form)
         clientRepository.save(client)
         return clientViewMapper.map(client)
     }
 
-    fun deactivate(id: Long): ClientView {
-        val cli: Client = clientRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
-        cli.isActive = false
-        val saveCli = clientRepository.save(cli)
-        return clientViewMapper.map(saveCli)
-    }
+    fun findById(id: Long): ClientView = clientViewMapper.map(findClient(id))
 
-    fun activate(id: Long): ClientView {
-        val cli: Client = clientRepository.findById(id)
-            .orElseThrow { NotFoundException(notFoundMessage) }
-        cli.isActive = true
-        val saveCli = clientRepository.save(cli)
-        return clientViewMapper.map(saveCli)
+    fun deactivate(id: Long): ClientView = clientViewMapper.map(switchActive(id, false))
+
+    fun activate(id: Long): ClientView = clientViewMapper.map(switchActive(id, true))
+
+    fun findClient(id: Long): Client = clientRepository.findById(id)
+        .orElseThrow { NotFoundException(notFoundMessage) }
+
+    fun switchActive(id: Long, active: Boolean): Client {
+        val client = findClient(id)
+        client.isActive = active
+        return clientRepository.save(client)
     }
 
 }
