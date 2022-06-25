@@ -4,13 +4,12 @@ import br.com.luiz.user.dto.ClientView
 import br.com.luiz.user.dto.NewClientForm
 import br.com.luiz.user.model.Client
 import br.com.luiz.user.service.ClientService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import javax.validation.Valid
 
@@ -19,6 +18,18 @@ import javax.validation.Valid
 class ClientController(
     private val service: ClientService
 ) {
+
+    @GetMapping
+    fun list(
+        @RequestParam(required = false) clientName: String?,
+        @PageableDefault(size = 5, direction = Sort.Direction.ASC) pagination: Pageable
+    ): Page<ClientView> = service.findAll(clientName, pagination)
+
+    @GetMapping("/{id}")
+    fun findClientById(@PathVariable id: Long): ResponseEntity<ClientView> {
+        val productView = service.findById(id)
+        return ResponseEntity.ok().body(productView)
+    }
 
     @PostMapping
     fun register(

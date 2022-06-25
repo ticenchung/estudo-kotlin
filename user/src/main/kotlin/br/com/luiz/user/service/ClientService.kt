@@ -7,6 +7,8 @@ import br.com.luiz.user.mapper.ClientFormMapper
 import br.com.luiz.user.mapper.ClientViewMapper
 import br.com.luiz.user.model.Client
 import br.com.luiz.user.repository.ClientRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,6 +18,26 @@ class ClientService(
     private val clientFormMapper: ClientFormMapper,
     private val notFoundMessage: String = "Client not found."
 ) {
+
+    fun findAll(
+        clientName: String?,
+        pagination: Pageable
+    ): Page<ClientView> {
+        val clients = if (clientName == null) {
+            clientRepository.findAll(pagination)
+        } else {
+            clientRepository.findByName(clientName, pagination)
+        }
+        return clients.map { c ->
+            clientViewMapper.map(c)
+        }
+    }
+
+    fun findById(id: Long): ClientView {
+        val client: Client = clientRepository.findById(id)
+            .orElseThrow { NotFoundException(notFoundMessage) }
+        return clientViewMapper.map(client)
+    }
 
     fun register(form: NewClientForm): ClientView {
         val client = clientFormMapper.map(form)
