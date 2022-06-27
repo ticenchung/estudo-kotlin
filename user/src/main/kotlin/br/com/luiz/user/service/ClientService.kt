@@ -3,10 +3,14 @@ package br.com.luiz.user.service
 import br.com.luiz.user.dto.ClientView
 import br.com.luiz.user.dto.NewClientForm
 import br.com.luiz.user.exception.NotFoundException
+import br.com.luiz.user.integration.feign.client.AddressFormClient
+import br.com.luiz.user.integration.feign.client.ZipCodeClient
 import br.com.luiz.user.mapper.ClientFormMapper
 import br.com.luiz.user.mapper.ClientViewMapper
+import br.com.luiz.user.model.Address
 import br.com.luiz.user.model.Client
 import br.com.luiz.user.repository.ClientRepository
+import com.google.gson.JsonObject
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -16,6 +20,7 @@ class ClientService(
     private val clientRepository: ClientRepository,
     private val clientViewMapper: ClientViewMapper,
     private val clientFormMapper: ClientFormMapper,
+    private val zipCodeClient: ZipCodeClient,
     private val notFoundMessage: String = "Client not found."
 ) {
 
@@ -35,6 +40,14 @@ class ClientService(
 
     fun register(form: NewClientForm): ClientView {
         val client = clientFormMapper.map(form)
+        val zipCode = zipCodeClient.generateZipCode(
+            AddressFormClient(
+                client.address.street,
+                client.address.city,
+                client.address.state
+            )
+        )
+        client.address.zipCode = zipCode
         clientRepository.save(client)
         return clientViewMapper.map(client)
     }

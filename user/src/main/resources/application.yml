@@ -17,7 +17,14 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
+  spring:
+    cloud:
+      config.import-check.enabled: false
 
 jwt:
   secret: f2982a72-e22d-4ae3-b091-2e7135b5d55a
   expiration : 900000
+
+integration:
+  zipCode:
+    url: http://localhost:8082/zipcode
