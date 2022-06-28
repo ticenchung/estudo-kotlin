@@ -47,7 +47,8 @@ class ClientService(
                 client.address.state
             )
         )
-        client.address.zipCode = zipCode
+        var format = zipCode.replace("{\"zipCode\":\"", "").replace("\"}", "")
+        client.address.zipCode = format
         clientRepository.save(client)
         return clientViewMapper.map(client)
     }
